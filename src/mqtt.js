@@ -14,9 +14,9 @@ export default function MQTTClient() {
   function onConnect() {
     console.log("onConnect");
 
-    const topic = "imagine/acuario"
+    const topic = "/board_1/weight_1"
     client.subscribe(topic);
-    message = new Paho.MQTT.Message("apagarluz,0,");
+    message = new Paho.MQTT.Message("Connected");
     message.destinationName = topic;
     client.send(message);
   }
@@ -35,17 +35,17 @@ export default function MQTTClient() {
     console.log('error', e);
   }
   
-  const client = new Paho.MQTT.Client('m10.cloudmqtt.com', 32692, "web_" + parseInt(Math.random() * 100, 10));
+  const client = new Paho.MQTT.Client('soldier.cloudmqtt.com', 13115, "web_" + parseInt(Math.random() * 100, 10));
   client.onConnectionLost = onConnectionLost;
   client.onMessageArrived = onMessageArrived;
 
   const options = {
     useSSL: true,
-    userName: "kfmxnwjy",
-    password: "KG_sRW8_RVpw",
+    userName: "mfoubemo", 
+    password: "9oUEiStFQCHU",
     onSuccess: onConnect,
     onFailure: doFail
-  };
+  }; 
 
   client.connect(options);
   

@@ -4,7 +4,7 @@ import { Container, Content, Card, CardItem, Text, Body, Button, Item, Input } f
 import { FontAwesome, MaterialIcons } from '@expo/vector-icons'
 
 
-class Login extends Component {
+class Register extends Component {
 
     constructor(props) {
         super(props);
@@ -41,7 +41,7 @@ class Login extends Component {
                     </Item>
                     <Item inlineLabel last>
                     <FontAwesome name='lock' size={20}></FontAwesome>
-                        <Input placeholder='Contraseña'/>
+                        <Input secureTextEntry={true} placeholder='Contraseña'/>
                     </Item>
                   </Body>
                 </CardItem>
@@ -79,4 +79,4 @@ const styles = StyleSheet.create({
     }
 })
 
-export default Login
+export default Register

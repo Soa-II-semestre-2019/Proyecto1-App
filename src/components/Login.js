@@ -21,6 +21,10 @@ class Login extends Component {
     register = () => {
         this.props.navigation.navigate('Register'); 
     }
+
+    dashboard = () => {
+        this.props.navigation.navigate('Dashboard'); 
+    }
        
 
     render () {
@@ -30,7 +34,7 @@ class Login extends Component {
         return (
             <Container style={styles.container} >
             <Content padder contentContainerStyle={styles.content}>
-              <Card>
+              <Card style={styles.carta}>
                 <CardItem header bordered>
                   <Text style={styles.textCenter}>Inicio de Sesión</Text>
                 </CardItem>
@@ -42,7 +46,7 @@ class Login extends Component {
                     </Item>
                     <Item inlineLabel last>
                     <FontAwesome name='lock' size={20}></FontAwesome>
-                        <Input placeholder='Contraseña'/>
+                        <Input secureTextEntry={true} placeholder='Contraseña'/>
                     </Item>
                   </Body>
                 </CardItem>
@@ -50,7 +54,7 @@ class Login extends Component {
                     <Button primary onPress={this.register}>
                          <Text>Registro</Text> 
                     </Button> 
-                    <Button success style={styles.button}>
+                    <Button success style={styles.button} onPress={this.dashboard}>
                         <Text>Entrar</Text> 
                     </Button>
                 </CardItem>
@@ -80,6 +84,9 @@ const styles = StyleSheet.create({
     },
     container: {
         backgroundColor: 'white' 
+    },
+    carta: {
+        backgroundColor: 'gray'
     }
 })
 
