@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import {StyleSheet} from 'react-native';
 import { Container, Content, Card, CardItem, Text, Body, Button, Item, Input } from 'native-base'
-import { FontAwesome } from '@expo/vector-icons'
+import { FontAwesome, MaterialIcons } from '@expo/vector-icons'
 
 
 class Login extends Component {
@@ -9,19 +9,14 @@ class Login extends Component {
     constructor(props) {
         super(props);
         this.state = { loading: true };
-    }
+      }
 
-    async componentWillMount() {
+      async componentWillMount() {
         await Expo.Font.loadAsync({  
           Roboto_medium: require("../../node_modules/native-base/Fonts/Roboto_medium.ttf"),
         });
         this.setState({ loading: false });
-    }
-
-    register = () => {
-        this.props.navigation.navigate('Register'); 
-    }
-       
+      }
 
     render () {
         if (this.state.loading) {
@@ -32,10 +27,14 @@ class Login extends Component {
             <Content padder contentContainerStyle={styles.content}>
               <Card>
                 <CardItem header bordered>
-                  <Text style={styles.textCenter}>Inicio de Sesión</Text>
+                  <Text style={styles.textCenter}>Registro de usarios</Text>
                 </CardItem>
                 <CardItem bordered>
                     <Body>
+                    <Item inlineLabel>
+                        <MaterialIcons name='email' size={20}></MaterialIcons>
+                        <Input placeholder='Correo electrónico'/>
+                    </Item>
                     <Item inlineLabel>
                         <FontAwesome name='user-circle' size={20}></FontAwesome>
                         <Input placeholder='Usuario'/>
@@ -46,18 +45,15 @@ class Login extends Component {
                     </Item>
                   </Body>
                 </CardItem>
-                <CardItem footer bordered>
-                    <Button primary onPress={this.register}>
-                         <Text>Registro</Text> 
-                    </Button> 
-                    <Button success style={styles.button}>
-                        <Text>Entrar</Text> 
-                    </Button>
+                <CardItem footer bordered> 
+                  <Button primary style={styles.button}>
+                      <Text>Registrarse</Text> 
+                  </Button>
                 </CardItem>
               </Card>
             </Content>
           </Container>
-        ); 
+        );
     }
 }
 
@@ -76,7 +72,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center'
     },
     button: {
-        marginLeft: '38%'
+        marginLeft: '55%'
     },
     container: {
         backgroundColor: 'white' 
