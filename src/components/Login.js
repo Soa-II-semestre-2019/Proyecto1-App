@@ -88,6 +88,6 @@ const styles = StyleSheet.create({
     carta: {
         backgroundColor: 'gray'
     }
-})
+    })
 
 export default Login

@@ -35,7 +35,7 @@ export default function MQTTClient() {
     console.log('error', e);
   }
   
-  const client = new Paho.MQTT.Client('soldier.cloudmqtt.com', 13115, "web_" + parseInt(Math.random() * 100, 10));
+  const client = new Paho.MQTT.Client('soldier.cloudmqtt.com', 33115, "web_" + parseInt(Math.random() * 100, 10));
   client.onConnectionLost = onConnectionLost;
   client.onMessageArrived = onMessageArrived;
 
