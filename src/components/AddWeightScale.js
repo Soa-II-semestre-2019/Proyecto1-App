@@ -1,30 +1,47 @@
 import React, { Component } from "react";
-import { Text, TextInput, Dimensions, StyleSheet } from "react-native";
+import {
+  Text,
+  TextInput,
+  Dimensions,
+  StyleSheet,
+  AsyncStorage
+} from "react-native";
 import { View } from "native-base";
 import Modal from "react-native-modalbox";
 import Button from "react-native-button";
+
+let weightArray = [];
 
 export default class AddWeightScale extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      topic: "",
-      scaleName: "",
+      idWeight: "",
+      itemType: "",
       weightLimit: "1"
     };
   }
+
   show = () => {
     this.myModal.open();
   };
 
-  getData = () => {
-    this.props.parentComponent.setState({ modalMessage: this.state.topic });
-    this.setState({
-      topic: "",
-      scaleName: "",
-      weightLimit: "1"
-    });
-    this.myModal.close();
+  getData = async () => {
+    try {
+      this.props.parentComponent.setState({ modalMessage: this.state.topic });
+      weightArray.push(JSON.stringify(this.state));
+      AsyncStorage.setItem("weightArray", JSON.stringify(this.weightArray));
+      console.log(weightArray);
+      alert(weightArray);
+      this.setState({
+        idWeight: "",
+        itemType: "",
+        weightLimit: "1"
+      });
+      this.myModal.close();
+    } catch (error) {
+      alert(error);
+    }
   };
 
   render() {
@@ -38,14 +55,14 @@ export default class AddWeightScale extends Component {
         <View>
           <Text>Agregar Medición</Text>
           <TextInput
-            onChangeText={text => this.setState({ topic: text })}
+            onChangeText={text => this.setState({ idWeight: text })}
             placeholder="Topic"
-            value={this.state.topic}
+            value={this.state.idWeight}
           />
           <TextInput
-            onChangeText={text => this.setState({ scaleName: text })}
+            onChangeText={text => this.setState({ itemType: text })}
             placeholder="scaleName"
-            value={this.state.scaleName}
+            value={this.state.itemType}
           />
           <TextInput
             onChangeText={text => this.setState({ weightLimit: text })}
@@ -54,7 +71,7 @@ export default class AddWeightScale extends Component {
           />
           <Button
             onPress={() => {
-              if (this.state.topic.length == 0) {
+              if (this.state.idWeight.length == 0) {
                 alert("No puede haber campos vacios");
                 return;
               } else {

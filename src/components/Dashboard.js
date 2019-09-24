@@ -6,7 +6,8 @@ import {
   Text,
   Body,
   CheckBox,
-  ListItem
+  ListItem,
+  Button
 } from "native-base";
 import init from "react_native_mqtt";
 import { AsyncStorage } from "react-native";
@@ -68,23 +69,19 @@ export default class Dashboard extends Component {
       message_placa1: "",
       message_placa2: "",
       modalMessage: "",
-      weightArray: [
+      /*weightArray: [
         { idWeight: "placa1", itemType: "Tomates" },
         { idWeight: "placa2", itemType: "Tomates", itemWeight: "50" },
         { idWeight: "placa3", itemType: "Tomates", itemWeight: "50" }
-      ]
+      ]*/
+      weightArray: [{ idWeight: "placa1", itemType: "Tomates" }]
     };
   }
-
   onConnect = () => {
     const { client } = this.state;
     console.log("onConnect");
-
     const topic = "/board_1/weight_1";
     client.subscribe(topic);
-    message = new Paho.MQTT.Message("0");
-    message.destinationName = topic;
-    client.send(message);
   };
 
   onConnectionLost = responseObject => {
@@ -141,6 +138,13 @@ export default class Dashboard extends Component {
     }
   };
 
+  displayData = async () => {
+    alert(JSON.parse(await AsyncStorage.getItem("weightArray")));
+    return (weightArray = JSON.parse(
+      await AsyncStorage.getItem("weightArray")
+    ));
+  };
+
   render() {
     return (
       <Container>
@@ -158,6 +162,9 @@ export default class Dashboard extends Component {
             )}
           />
           <Text>{this.state.modalMessage}</Text>
+          <Button primary onPress={this.displayData}>
+            <Text>Actualizar</Text>
+          </Button>
           <FloatingAction
             actions={actions}
             onPressItem={name => {
