@@ -1,5 +1,5 @@
-import init from 'react_native_mqtt';
-import { AsyncStorage } from 'react-native';
+import init from "react_native_mqtt";
+import { AsyncStorage } from "react-native";
 
 export default function MQTTClient() {
   init({
@@ -8,46 +8,50 @@ export default function MQTTClient() {
     defaultExpires: 1000 * 3600 * 24,
     enableCache: true,
     reconnect: true,
-    sync : {}
+    sync: {}
   });
-  
+
   function onConnect() {
     console.log("onConnect");
 
-    const topic = "/board_1/weight_1"
+    const topic = "/board_1/weight_1";
     client.subscribe(topic);
     message = new Paho.MQTT.Message("Connected");
     message.destinationName = topic;
     client.send(message);
   }
-  
+
   function onConnectionLost(responseObject) {
     if (responseObject.errorCode !== 0) {
       console.log("onConnectionLost:" + responseObject.errorMessage);
     }
   }
-  
+
   function onMessageArrived(message) {
     console.log("onMessageArrived:" + message.payloadString);
   }
 
-  function doFail(e){
-    console.log('error', e);
+  function doFail(e) {
+    console.log("error", e);
   }
-  
-  const client = new Paho.MQTT.Client('soldier.cloudmqtt.com', 33115, "web_" + parseInt(Math.random() * 100, 10));
+
+  const client = new Paho.MQTT.Client(
+    "soldier.cloudmqtt.com",
+    33115,
+    "web_" + parseInt(Math.random() * 100, 10)
+  );
   client.onConnectionLost = onConnectionLost;
   client.onMessageArrived = onMessageArrived;
 
   const options = {
     useSSL: true,
-    userName: "mfoubemo", 
+    userName: "mfoubemo",
     password: "9oUEiStFQCHU",
     onSuccess: onConnect,
     onFailure: doFail
-  }; 
+  };
 
   client.connect(options);
-  
-  return client
+
+  return client;
 }

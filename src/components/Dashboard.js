@@ -3,18 +3,17 @@ import { StyleSheet, FlatList, View } from "react-native";
 import {
   Container,
   Content,
-  Card,
-  CardItem,
   Text,
   Body,
-  Button,
-  Item,
-  Input,
   CheckBox,
   ListItem
 } from "native-base";
 import init from "react_native_mqtt";
 import { AsyncStorage } from "react-native";
+import { FloatingAction } from "react-native-floating-action";
+
+import AddWeightScale from "./AddWeightScale";
+import Config from "../config/config";
 
 init({
   size: 10000,
@@ -25,12 +24,27 @@ init({
   sync: {}
 });
 
+const actions = [
+  {
+    text: "Agregar",
+    icon: require("../images/weight-scale.png"),
+    name: "bt_add",
+    position: 2
+  },
+  {
+    text: "Salir",
+    icon: require("../images/log-out.png"),
+    name: "bt_exit",
+    position: 1
+  }
+];
+
 export default class Dashboard extends Component {
   constructor(props) {
     super(props);
     const client = new Paho.MQTT.Client(
-      "soldier.cloudmqtt.com",
-      33115,
+      Config.server,
+      Config.port,
       "/ws",
       "web_" + parseInt(Math.random() * 100, 10)
     );
@@ -39,8 +53,8 @@ export default class Dashboard extends Component {
 
     const options = {
       useSSL: true,
-      userName: "mfoubemo",
-      password: "9oUEiStFQCHU",
+      userName: Config.userName,
+      password: Config.password,
       onSuccess: this.onConnect,
       onFailure: this.doFail
     };
@@ -53,6 +67,7 @@ export default class Dashboard extends Component {
       placa2State: true,
       message_placa1: "",
       message_placa2: "",
+      modalMessage: "",
       weightArray: [
         { idWeight: "placa1", itemType: "Tomates" },
         { idWeight: "placa2", itemType: "Tomates", itemWeight: "50" },
@@ -130,9 +145,6 @@ export default class Dashboard extends Component {
     return (
       <Container>
         <Content contentContainerStyle={styles.content}>
-          <Button rounded onPress={this._onPress}>
-            <Text style={styles.textCenter}>Actualizar</Text>
-          </Button>
           <FlatList
             data={this.state.weightArray}
             keyExtractor={item => item.idWeight}
@@ -144,6 +156,19 @@ export default class Dashboard extends Component {
                 idWeight={item.idWeight}
               />
             )}
+          />
+          <Text>{this.state.modalMessage}</Text>
+          <FloatingAction
+            actions={actions}
+            onPressItem={name => {
+              if (name == "bt_add") {
+                this.myModal.show();
+              }
+            }}
+          />
+          <AddWeightScale
+            ref={modal => (this.myModal = modal)}
+            parentComponent={this}
           />
         </Content>
       </Container>
