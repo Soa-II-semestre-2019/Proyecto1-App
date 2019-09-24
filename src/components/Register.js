@@ -70,6 +70,7 @@ class Register extends Component {
         })
         .catch(error => {
           console.error(error);
+          Alert.alert(error);
         });
     }
   };
