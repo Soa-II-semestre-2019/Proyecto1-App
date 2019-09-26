@@ -1,11 +1,16 @@
 import React, { Component } from "react";
-import { Text, Dimensions, StyleSheet, AsyncStorage } from "react-native";
+import {
+  Text,
+  Dimensions,
+  StyleSheet,
+  ToastAndroid,
+  Alert,
+  AsyncStorage
+} from "react-native";
 import { View, CardItem, Body, Item, Input } from "native-base";
 import Modal from "react-native-modalbox";
 import Button from "react-native-button";
 import { FontAwesome, MaterialCommunityIcons } from "@expo/vector-icons";
-
-let weightArray = new Array();
 
 export default class AddWeightScale extends Component {
   constructor(props) {
@@ -13,37 +18,77 @@ export default class AddWeightScale extends Component {
     this.state = {
       idWeight: "",
       itemType: "",
-      weightLimit: "1"
+      weightLimit: "1",
+      storeUser: "",
+      weightArray: []
     };
+  }
+
+  async componentDidMount() {
+    let storeUser = await AsyncStorage.getItem("user");
+    this.setState({ storeUser });
   }
 
   show = () => {
     this.myModal.open();
   };
 
-  _storeaData = async value => {
-    try {
-      alert(JSON.stringify(value));
-      await AsyncStorage.setItem("pruebaArray", JSON.stringify(value));
-    } catch (error) {
-      alert(error);
-    }
+  openModal = (idWeight, itemType, weightLimit) => {
+    this.setState({ idWeight, itemType, weightLimit });
+    this.myModal.open();
   };
+
   getData = () => {
-    try {
-      this.props.parentComponent.setState({
-        modalMessage: this.state.idWeight
+    fetch("https://intelliweight-server.herokuapp.com/userDevice/findUser", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        user: this.state.storeUser
+      })
+    })
+      .then(response => response.json())
+      .then(responseJson => {
+        this.setState({ weightArray: responseJson.mensaje });
+      })
+      .catch(error => {
+        console.error(error);
       });
-      this._storeaData(weightArray.push(JSON.stringify(this.state)));
-      this.setState({
-        idWeight: "",
-        itemType: "",
-        weightLimit: "1"
+  };
+
+  sendData = () => {
+    fetch("https://intelliweight-server.herokuapp.com/userDevice", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        user: this.state.storeUser,
+        idWeight: this.state.idWeight,
+        itemType: this.state.itemType,
+        weightLimit: this.state.weightLimit
+      })
+    })
+      .then(response => response.json())
+      .then(responseJson => {
+        if (responseJson.mensaje === "Dispositivo agregado") {
+          ToastAndroid.show("Agregado", ToastAndroid.SHORT);
+          this.getData();
+          this.props.parentComponent.setState({
+            weightArray: this.state.weightArray
+          });
+          this.myModal.close();
+        } else {
+          Alert.alert(responseJson.mensaje);
+        }
+      })
+      .catch(error => {
+        console.error(error);
+        Alert.alert(error);
       });
-      this.myModal.close();
-    } catch (error) {
-      alert(error);
-    }
   };
 
   render() {
@@ -93,8 +138,7 @@ export default class AddWeightScale extends Component {
                 alert("No puede haber campos vacios");
                 return;
               } else {
-                this.getData;
-                alert("ejecutando");
+                this.sendData();
               }
             }}
           >

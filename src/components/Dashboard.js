@@ -20,6 +20,7 @@ import { FloatingAction } from "react-native-floating-action";
 
 import AddWeightScale from "./AddWeightScale";
 import Config from "../config/config";
+import { TouchableOpacity } from "react-native-gesture-handler";
 
 init({
   size: 10000,
@@ -73,22 +74,58 @@ export default class Dashboard extends Component {
       message_placa1: "",
       message_placa2: "",
       modalMessage: "",
-      /*weightArray: [
-        { idWeight: "placa1", itemType: "Tomates" },
-        { idWeight: "placa2", itemType: "Tomates", itemWeight: "50" },
-        { idWeight: "placa3", itemType: "Tomates", itemWeight: "50" }
-      ]*/
-      weightArray: [{ idWeight: "placa1", itemType: "Tomates" }]
+      storeUser: "",
+      weightArray: []
     };
   }
 
-  async componentWillMount() {
+  async componentDidMount() {
     await this.state.client.connect(this.state.options);
+    let storeUser = await AsyncStorage.getItem("user");
+    this.setState({ storeUser });
+    try {
+      fetch("https://intelliweight-server.herokuapp.com/userDevice/findUser", {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          user: this.state.storeUser
+        })
+      })
+        .then(response => response.json())
+        .then(responseJson => {
+          this.setState({ weightArray: responseJson.mensaje });
+        })
+        .catch(error => {
+          console.error(error);
+          Alert.alert(error);
+        });
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   async componentWillUnmount() {
     await this.state.client.disconnect(this.state.options);
   }
+
+  getUser = () => {
+    alert(this.state.storeUser);
+  };
+
+  changeData = key => {
+    for (i = 0; i < this.state.weightArray.length; i++) {
+      if (this.state.weightArray[i].idWeight == key) {
+        this.myModal.openModal(
+          this.state.weightArray[i].idWeight,
+          this.state.weightArray[i].itemType,
+          1
+        );
+      }
+    }
+  };
 
   onConnect = () => {
     const { client } = this.state;
@@ -119,16 +156,16 @@ export default class Dashboard extends Component {
   };
 
   renderWeight = id => {
-    if (id == "placa1") {
+    if (id == "/board_1/weight_1") {
       return this.state.message_placa1;
     }
-    if (id == "placa2") {
+    if (id == "/board_1/weight_2") {
       return this.state.message_placa2;
     }
   };
 
   check = id => {
-    if (id == "placa1") {
+    if (id == "/board_1/weight_1") {
       return this.state.placa1State;
     } else {
       return this.state.placa2State;
@@ -183,6 +220,9 @@ export default class Dashboard extends Component {
                 if (name == "bt_add") {
                   this.myModal.show();
                 }
+                if (name == "bt_exit") {
+                  this.getUser();
+                }
               }}
             />
             <AddWeightScale
@@ -195,6 +235,22 @@ export default class Dashboard extends Component {
     );
   }
 }
+
+const WeightRow = ({ itemType, idWeight, parentComponent }) => (
+  <View>
+    <TouchableOpacity onLongPress={() => parentComponent.changeData(idWeight)}>
+      <ListItem>
+        <View style={styles.View}>
+          <Text style={styles.itemTitle}>{itemType}</Text>
+          <Text style={styles.itemValue}>
+            {parentComponent.renderWeight(idWeight)} kg
+          </Text>
+        </View>
+      </ListItem>
+    </TouchableOpacity>
+  </View>
+);
+
 const styles = StyleSheet.create({
   textCenter: {
     textAlign: "center",
@@ -202,7 +258,7 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
-    justifyContent: "center"
+    padding: 20
   },
   loadingApp: {
     textAlign: "center",
@@ -223,28 +279,15 @@ const styles = StyleSheet.create({
   itemValue: {
     color: "gray",
     fontSize: 15,
-    marginLeft: 15,
-    marginTop: 10
+    position: "absolute",
+    right: 15,
+    alignSelf: "flex-end"
   },
   keyboard: {
     flex: 1
+  },
+  View: {
+    flex: 1,
+    flexDirection: "row"
   }
 });
-
-const WeightRow = ({ itemType, idWeight, parentComponent }) => (
-  <View>
-    <Text style={styles.itemTitle}>{itemType}</Text>
-    <Text style={styles.itemValue}>
-      {parentComponent.renderWeight(idWeight)} kg
-    </Text>
-    <ListItem>
-      <CheckBox
-        checked={parentComponent.check(idWeight)}
-        onPress={() => parentComponent.setStateWeight(idWeight)}
-      />
-      <Body>
-        <Text>Notificame</Text>
-      </Body>
-    </ListItem>
-  </View>
-);

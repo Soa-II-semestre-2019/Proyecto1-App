@@ -3,13 +3,9 @@
     "name": "IntelliWeight",
     "slug": "IntelliWeight",
     "privacy": "public",
-    "sdkVersion": "33.0.0",
-    "platforms": [
-      "ios",
-      "android",
-      "web"
-    ],
-    "version": "1.0.0",
+    "sdkVersion": "34.0.0",
+    "platforms": ["ios", "android", "web"],
+    "version": "1.0.1",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "splash": {
@@ -20,11 +16,9 @@
     "updates": {
       "fallbackToCacheTimeout": 0
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
-    "ios": {
-      "supportsTablet": true
+    "assetBundlePatterns": ["**/*"],
+    "android": {
+      "package": "com.company.IntelliWeight"
     },
     "description": ""
   }

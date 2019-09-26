@@ -3,7 +3,8 @@ import {
   StyleSheet,
   KeyboardAvoidingView,
   Alert,
-  ToastAndroid
+  ToastAndroid,
+  AsyncStorage
 } from "react-native";
 import {
   Container,
@@ -39,6 +40,14 @@ class Login extends Component {
     this.props.navigation.navigate("Register");
   };
 
+  _storeData = async () => {
+    try {
+      await AsyncStorage.setItem("user", this.state.userText);
+    } catch (error) {
+      alert(error);
+    }
+  };
+
   login = () => {
     if (this.state.userText === "" || this.state.passwordText === "") {
       Alert.alert("Por favor llenar todos los campos para ingresar");
@@ -58,6 +67,7 @@ class Login extends Component {
         .then(responseJson => {
           if (responseJson.mensaje === "Login exitoso") {
             ToastAndroid.show("Bienvenido", ToastAndroid.SHORT);
+            this._storeData();
             this.props.navigation.navigate("Dashboard");
           } else {
             Alert.alert(responseJson.mensaje);
@@ -82,7 +92,7 @@ class Login extends Component {
               <CardItem header bordered>
                 <Text style={styles.textCenter}>Inicio de Sesión</Text>
               </CardItem>
-              <CardItem bordered>
+              <CardItem>
                 <Body>
                   <Item inlineLabel>
                     <FontAwesome name="user-circle" size={20}></FontAwesome>
@@ -105,7 +115,7 @@ class Login extends Component {
                   </Item>
                 </Body>
               </CardItem>
-              <CardItem footer bordered>
+              <CardItem footer>
                 <Button primary onPress={this.register}>
                   <Text>Registro</Text>
                 </Button>
