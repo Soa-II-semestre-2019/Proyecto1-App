@@ -44,7 +44,7 @@ class Register extends Component {
       this.state.passwordText === ""
     ) {
       Alert.alert(
-        "Por favor no llenar todos los campos para poder registrar un nuevo usuario"
+        "Por favor llenar todos los campos para poder registrar un nuevo usuario"
       );
     } else {
       fetch("https://intelliweight-server.herokuapp.com/users/register", {
@@ -119,7 +119,7 @@ class Register extends Component {
                   </Item>
                 </Body>
               </CardItem>
-              <CardItem footer bordered>
+              <CardItem footer>
                 <Button primary style={styles.button} onPress={this.register}>
                   <Text>Registrarse</Text>
                 </Button>
