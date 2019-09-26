@@ -8,6 +8,8 @@
     "eject": "expo eject"
   },
   "dependencies": {
+    "@fortawesome/free-brands-svg-icons": "5.11.2",
+    "@fortawesome/free-regular-svg-icons": "5.11.2",
     "config": "^3.2.2",
     "expo": "^35.0.0",
     "expo-font": "~7.0.0",

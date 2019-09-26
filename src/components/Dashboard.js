@@ -1,13 +1,18 @@
 import React, { Component } from "react";
-import { StyleSheet, FlatList, View } from "react-native";
+import {
+  StyleSheet,
+  FlatList,
+  View,
+  Alert,
+  KeyboardAvoidingView
+} from "react-native";
 import {
   Container,
   Content,
   Text,
   Body,
   CheckBox,
-  ListItem,
-  Button
+  ListItem
 } from "native-base";
 import init from "react_native_mqtt";
 import { AsyncStorage } from "react-native";
@@ -60,10 +65,9 @@ export default class Dashboard extends Component {
       onFailure: this.doFail
     };
 
-    client.connect(options);
-
     this.state = {
       client,
+      options,
       placa1State: true,
       placa2State: true,
       message_placa1: "",
@@ -77,6 +81,15 @@ export default class Dashboard extends Component {
       weightArray: [{ idWeight: "placa1", itemType: "Tomates" }]
     };
   }
+
+  async componentWillMount() {
+    await this.state.client.connect(this.state.options);
+  }
+
+  async componentWillUnmount() {
+    await this.state.client.disconnect(this.state.options);
+  }
+
   onConnect = () => {
     const { client } = this.state;
     console.log("onConnect");
@@ -139,46 +152,46 @@ export default class Dashboard extends Component {
   };
 
   displayData = async () => {
-    alert(JSON.parse(await AsyncStorage.getItem("weightArray")));
+    Alert.alert(await AsyncStorage.getItem("pruebaArray"));
     return (weightArray = JSON.parse(
-      await AsyncStorage.getItem("weightArray")
+      await AsyncStorage.getItem("pruebaArray")
     ));
   };
 
   render() {
     return (
-      <Container>
-        <Content contentContainerStyle={styles.content}>
-          <FlatList
-            data={this.state.weightArray}
-            keyExtractor={item => item.idWeight}
-            extraData={this.state}
-            renderItem={({ item }) => (
-              <WeightRow
-                parentComponent={this}
-                itemType={item.itemType}
-                idWeight={item.idWeight}
-              />
-            )}
-          />
-          <Text>{this.state.modalMessage}</Text>
-          <Button primary onPress={this.displayData}>
-            <Text>Actualizar</Text>
-          </Button>
-          <FloatingAction
-            actions={actions}
-            onPressItem={name => {
-              if (name == "bt_add") {
-                this.myModal.show();
-              }
-            }}
-          />
-          <AddWeightScale
-            ref={modal => (this.myModal = modal)}
-            parentComponent={this}
-          />
-        </Content>
-      </Container>
+      <KeyboardAvoidingView style={styles.keyboard} behavior="padding">
+        <Container>
+          <Content contentContainerStyle={styles.content}>
+            <FlatList
+              data={this.state.weightArray}
+              keyExtractor={item => item.idWeight}
+              extraData={this.state}
+              renderItem={({ item }) => (
+                <WeightRow
+                  parentComponent={this}
+                  itemType={item.itemType}
+                  idWeight={item.idWeight}
+                />
+              )}
+            />
+            <Text>{this.state.modalMessage}</Text>
+
+            <FloatingAction
+              actions={actions}
+              onPressItem={name => {
+                if (name == "bt_add") {
+                  this.myModal.show();
+                }
+              }}
+            />
+            <AddWeightScale
+              ref={modal => (this.myModal = modal)}
+              parentComponent={this}
+            />
+          </Content>
+        </Container>
+      </KeyboardAvoidingView>
     );
   }
 }
@@ -212,6 +225,9 @@ const styles = StyleSheet.create({
     fontSize: 15,
     marginLeft: 15,
     marginTop: 10
+  },
+  keyboard: {
+    flex: 1
   }
 });
 
@@ -219,7 +235,7 @@ const WeightRow = ({ itemType, idWeight, parentComponent }) => (
   <View>
     <Text style={styles.itemTitle}>{itemType}</Text>
     <Text style={styles.itemValue}>
-      {parentComponent.renderWeight(idWeight)}
+      {parentComponent.renderWeight(idWeight)} kg
     </Text>
     <ListItem>
       <CheckBox

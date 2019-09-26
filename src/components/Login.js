@@ -41,9 +41,7 @@ class Login extends Component {
 
   login = () => {
     if (this.state.userText === "" || this.state.passwordText === "") {
-      Alert.alert(
-        "Por favor no llenar todos los campos para poder ingresar a su cuenta"
-      );
+      Alert.alert("Por favor llenar todos los campos para ingresar");
     } else {
       fetch("https://intelliweight-server.herokuapp.com/users/login", {
         method: "POST",

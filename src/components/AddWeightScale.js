@@ -1,16 +1,11 @@
 import React, { Component } from "react";
-import {
-  Text,
-  TextInput,
-  Dimensions,
-  StyleSheet,
-  AsyncStorage
-} from "react-native";
-import { View } from "native-base";
+import { Text, Dimensions, StyleSheet, AsyncStorage } from "react-native";
+import { View, CardItem, Body, Item, Input } from "native-base";
 import Modal from "react-native-modalbox";
 import Button from "react-native-button";
+import { FontAwesome, MaterialCommunityIcons } from "@expo/vector-icons";
 
-let weightArray = [];
+let weightArray = new Array();
 
 export default class AddWeightScale extends Component {
   constructor(props) {
@@ -26,13 +21,20 @@ export default class AddWeightScale extends Component {
     this.myModal.open();
   };
 
-  getData = async () => {
+  _storeaData = async value => {
     try {
-      this.props.parentComponent.setState({ modalMessage: this.state.topic });
-      weightArray.push(JSON.stringify(this.state));
-      AsyncStorage.setItem("weightArray", JSON.stringify(this.weightArray));
-      console.log(weightArray);
-      alert(weightArray);
+      alert(JSON.stringify(value));
+      await AsyncStorage.setItem("pruebaArray", JSON.stringify(value));
+    } catch (error) {
+      alert(error);
+    }
+  };
+  getData = () => {
+    try {
+      this.props.parentComponent.setState({
+        modalMessage: this.state.idWeight
+      });
+      this._storeaData(weightArray.push(JSON.stringify(this.state)));
       this.setState({
         idWeight: "",
         itemType: "",
@@ -53,29 +55,46 @@ export default class AddWeightScale extends Component {
         style={styles.modal}
       >
         <View>
-          <Text>Agregar Medición</Text>
-          <TextInput
-            onChangeText={text => this.setState({ idWeight: text })}
-            placeholder="Topic"
-            value={this.state.idWeight}
-          />
-          <TextInput
-            onChangeText={text => this.setState({ itemType: text })}
-            placeholder="scaleName"
-            value={this.state.itemType}
-          />
-          <TextInput
-            onChangeText={text => this.setState({ weightLimit: text })}
-            placeholder="weightLimit"
-            value={this.state.weightLimit}
-          />
+          <Text style={styles.titulo}>Agregar Medición</Text>
+          <CardItem bordered>
+            <Body>
+              <Item inlineLabel>
+                <FontAwesome name="barcode" size={20}></FontAwesome>
+                <Input
+                  placeholder="Código del Dispositivo"
+                  onChangeText={text => this.setState({ idWeight: text })}
+                  value={this.state.idWeight}
+                />
+              </Item>
+              <Item inlineLabel>
+                <FontAwesome name="balance-scale" size={20}></FontAwesome>
+                <Input
+                  placeholder="Producto medición"
+                  onChangeText={text => this.setState({ itemType: text })}
+                  value={this.state.itemType}
+                />
+              </Item>
+              <Item inlineLabel last>
+                <MaterialCommunityIcons
+                  name="scale"
+                  size={20}
+                ></MaterialCommunityIcons>
+                <Input
+                  onChangeText={text => this.setState({ weightLimit: text })}
+                  placeholder="Peso mínimo"
+                  //value={this.state.weightLimit}
+                />
+              </Item>
+            </Body>
+          </CardItem>
           <Button
             onPress={() => {
               if (this.state.idWeight.length == 0) {
                 alert("No puede haber campos vacios");
                 return;
               } else {
-                this.getData();
+                this.getData;
+                alert("ejecutando");
               }
             }}
           >
@@ -92,32 +111,15 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     shadowRadius: 10,
     width: Dimensions.get("screen").width - 30,
-    height: 500
+    height: 310,
+    borderRadius: 20
   },
-  content: {
-    flex: 1,
-    justifyContent: "center"
-  },
-  loadingApp: {
+  titulo: {
     textAlign: "center",
     width: "100%",
-    justifyContent: "center"
-  },
-  button: {
-    marginLeft: "38%"
-  },
-  container: {
-    backgroundColor: "white"
-  },
-  itemTitle: {
+    justifyContent: "center",
     fontSize: 20,
     fontWeight: "bold",
-    marginLeft: 15
-  },
-  itemValue: {
-    color: "gray",
-    fontSize: 15,
-    marginLeft: 15,
-    marginTop: 10
+    paddingBottom: 30
   }
 });
