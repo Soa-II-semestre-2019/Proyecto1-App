@@ -38,6 +38,7 @@ export default class AddWeightScale extends Component {
     this.myModal.open();
   };
 
+  /*Obtención de dispositivos asociados a un usuario*/
   getData = () => {
     fetch("https://intelliweight-server.herokuapp.com/userDevice/findUser", {
       method: "POST",
@@ -58,6 +59,7 @@ export default class AddWeightScale extends Component {
       });
   };
 
+  /*Registro de dispositivos asociados a un usuario*/
   sendData = () => {
     fetch("https://intelliweight-server.herokuapp.com/userDevice", {
       method: "POST",

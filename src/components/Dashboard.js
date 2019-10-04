@@ -6,14 +6,7 @@ import {
   Alert,
   KeyboardAvoidingView
 } from "react-native";
-import {
-  Container,
-  Content,
-  Text,
-  Body,
-  CheckBox,
-  ListItem
-} from "native-base";
+import { Container, Content, Text, ListItem } from "native-base";
 import init from "react_native_mqtt";
 import { AsyncStorage } from "react-native";
 import { FloatingAction } from "react-native-floating-action";
@@ -31,6 +24,7 @@ init({
   sync: {}
 });
 
+/*Acciones del FloatingAction*/
 const actions = [
   {
     text: "Agregar",
@@ -79,6 +73,7 @@ export default class Dashboard extends Component {
     };
   }
 
+  /*Obtención de dispositivos para mostrar en la lista del Dashboard*/
   async componentDidMount() {
     await this.state.client.connect(this.state.options);
     let storeUser = await AsyncStorage.getItem("user");
@@ -115,6 +110,7 @@ export default class Dashboard extends Component {
     alert(this.state.storeUser);
   };
 
+  /*Desplegar modal con información tomada de la lista para modificar un dispositivo*/
   changeData = key => {
     for (i = 0; i < this.state.weightArray.length; i++) {
       if (this.state.weightArray[i].idWeight == key) {

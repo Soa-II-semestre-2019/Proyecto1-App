@@ -37,6 +37,7 @@ class Register extends Component {
     this.setState({ loading: false });
   }
 
+  /*Registro de datos de usuario para ingresar a la aplicación*/
   register = () => {
     if (
       this.state.userText === "" ||

@@ -40,6 +40,7 @@ class Login extends Component {
     this.props.navigation.navigate("Register");
   };
 
+  /*Almacenar usuario en el local storage */
   _storeData = async () => {
     try {
       await AsyncStorage.setItem("user", this.state.userText);
@@ -48,6 +49,7 @@ class Login extends Component {
     }
   };
 
+  /*Envio de datos para ingresar a la aplicación*/
   login = () => {
     if (this.state.userText === "" || this.state.passwordText === "") {
       Alert.alert("Por favor llenar todos los campos para ingresar");
